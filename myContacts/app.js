@@ -1,5 +1,7 @@
 const express=require("express");
 const dbConnect = require('./config/dbConnect');
+const methodOverride = require("method-override");
+const bcrypt = require("bcrypt");
 
 const app=express();
 app.set("view engine","ejs");   //ejs 엔진을 사용할 것이라고 알려준다.
@@ -8,6 +10,8 @@ const port=3000;
 
 // load public files
 app.use(express.static("./public"));
+
+app.use(methodOverride("_method"));
 
 /*app.get("/",(req,res)=>{
     res.status(200).send("Hello Node!");
@@ -43,6 +47,7 @@ dbConnect();
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
+app.use("/",require("./routes/loginRoutes"));
 app.use("/contacts",require("./routes/contactRoutes"));
 
 app.get("/test",(req,res,next)=>{

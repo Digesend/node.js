@@ -7,15 +7,15 @@ const Contact = require("../models/contactModel");
 const getAllContacts = asyncHandler(async (req,res)=>{
     try{
         const contacts=await Contact.find();
-        const users=[
-            {name:"John",email:"john@aaa.bbb",phone:"123456789"},
-            {name:"An",email:"miri@naver.com",phone:"65413155"},
-        ];
-        res.render("getAll",{heading:"User Lit", users:users});   // views 폴더에 있는 getAll.ejs 파일 렌더링
+        res.render("index",{contacts:contacts});
     }catch(error){
         res.send(error.message);
     }
 });
+
+const addContactForm = (req,res)=>{
+    res.render("add");  // view/add.ejs 렌더링
+}
 
 /*const getAllContacts = asyncHandler(async (req,res)=>{
     try{
@@ -39,20 +39,28 @@ const createContact = asyncHandler(async(req,res)=>{
         email,
         phone,
     });
-    res.status(201).send("Create Contacts");
+    res.redirect("/contacts");
 });
 
 const getContact=asyncHandler(async(req,res)=>{
     const contact=await Contact.findById(req.params.id);
-    res.status(200).send(contact);
+    res.render("update",{contact:contact});
 });
 
 const updateContact=asyncHandler(async(req,res)=>{
-    res.status(200).send(`Update Contact for ID:${req.params.id}`);
+    const id=req.params.id;
+    const {name,email,phone} = req.body;
+    const updateContact = await Contact.findByIdAndUpdate(
+        id,
+        {name,email,phone},
+        {new:true}
+    );
+    res.redirect("/contacts");
 });
 
 const deleteContact=asyncHandler(async(req,res)=>{
-    res.status(200).send(`Delete Contact for ID:${req.params.id}`);
+    await Contact.findByIdAndDelete(req.params.id);
+    res.redirect("/contacts");
 });
 
-module.exports={getAllContacts, createContact,getContact,updateContact,deleteContact};
+module.exports={getAllContacts, createContact,getContact,updateContact,deleteContact,addContactForm,};
