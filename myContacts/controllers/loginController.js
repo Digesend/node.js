@@ -49,6 +49,11 @@ const loginUser = asyncHandler(async(req,res)=>{
     }*/
 });
 
+const logout=(req,res)=>{
+  res.clearCookie("token");
+  res.redirect("/");
+};
+
 const registerUser = asyncHandler(async(req,res)=>{
   const {username,password,password2} = req.body;
   
@@ -61,4 +66,4 @@ const registerUser = asyncHandler(async(req,res)=>{
   }
 });
 
-module.exports={getRegister,registerUser,getLogin, loginUser};
+module.exports={getRegister,registerUser,getLogin, loginUser,logout};
