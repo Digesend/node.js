@@ -2,14 +2,27 @@ const express = require("express");
 const router = express.Router();
 const mainLayout = "../views/layouts/main.ejs";
 const Post = require("../models/Post");
+const asynchandler=require("express-async-handler");
 
-router.get(["/","/home"],(req,res)=>{
+router.get(["/","/home"],
+    asynchandler(async(req,res)=>{
     const locals={
         title:"Home",
-    }
+    };
+
+    const data=await Post.find({}); //데이터베이스에 있는 데이터 모두 가져오기
     // index.ejs를 렌더링하는데 mainLayout 레이아웃으로 감싸기
-    res.render("index",{locals,layout:mainLayout});
-});
+    res.render("index",{locals,data,layout:mainLayout});
+    })
+);
+
+router.get(
+    "/post/:id",
+    asynchandler(async(req,res)=>{
+        const data=await Post.findOne({_id:req.params.id}); // 데이터 1개 가져오기
+        res.render("post",{data,layout:mainLayout});
+    })
+);
 
 router.get("/about",(req,res)=>{
     //  about.ejs를 렌더링하는데 mainLayout 레이아웃으로 감싸기
@@ -17,26 +30,3 @@ router.get("/about",(req,res)=>{
 });
 
 module.exports=router;
-
-Post.insertMany([
-    {
-        title:"제목1",
-        body:"내용1-불쌍한 내 인생",
-    },
-    {
-        title:"제목2",
-        body:"내용2-우리가 누구냐고 물으신다면",
-    },
-    {
-        title:"제목3",
-        body:"내용3-대답해드리는게 인지상정",
-    },
-    {
-        title:"제목4",
-        body:"내용4-나 로이",
-    },
-    {
-        title:"제목5",
-        body:"내용5-나 로사",
-    },
-]);
