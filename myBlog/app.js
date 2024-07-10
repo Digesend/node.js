@@ -17,7 +17,11 @@ app.set("views","./views");
 // 정적 파일
 app.use(express.static("public"));
 
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
 app.use("/",require("./routes/main"));
+app.use("/",require("./routes/admin"));
 
 app.listen(port,()=>{
     console.log(`App listening on port ${port}`);
